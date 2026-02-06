@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Student Eco Tracker</title>
+        
+        <link rel="stylesheet" href="styles.css">
+    </head>
+
+    <body>
+        <nav class="navbar">
+            <img draggable="false" class="navbar-logo" src="img/umoncton_logo.png">
+            <h2 class="navbar-brand">Université de Moncton</h2>
+        </nav> 
+
+        <div class="content">
+            <!-- Sidebar -->
+            <aside class="content-sidebar">
+                <!-- Sidebar Main Menu -->
+                <ul class="sidebar-list sidebar-menu">
+                    <!-- Dynamic Content -->
+                    <label class="menu-item" style="--color: #0077ff">
+                        <input name="sidebar-menu" type="radio" value="transport" style="display: none;">
+
+                        <img draggable="false" class="item-icon" src="svg/car.svg">
+                    </label>                  
+
+                    <label class="menu-item" style="--color: #5FAF8A">
+                        <input name="sidebar-menu" type="radio" value="food" style="display: none;">
+
+                        <img draggable="false" class="item-icon" src="svg/food.svg">
+                    </label>                  
+                </ul>
+
+                <!-- Dynamic Content -->
+
+                <!-- Collapsible Menu -->
+                <aside id="transport" class="sidebar-collapse collapsed">
+                    <header class="collapse-heading">
+                        <h3 class="heading-title">Transport</h3>
+
+                        <!-- Close Btn -->
+                        <button class="heading-close">
+                            <img draggable="false" class="close-icon" src="svg/arrow_back.svg">
+                        </button>
+                    </header>
+
+                    <ul class="sidebar-list collapse-list">
+                        <!-- Dynamic Content -->
+                        <li class="list-item" draggable="true">
+                            <h5 class="item-title">Voiture</h5>
+
+                            <ul class="item-attribute">
+                                <li id="attribute-time" class="attribute-entry"><h6 class="attribute-header">10 min</h6></li>
+                                <li id="attribute-passengers" class="attribute-entry"><h6 class="attribute-header">1 <img draggable="false" class="attribute-icon" src="svg/person.svg"></h6></li>
+                                <li id="attribute-fuel" class="attribute-entry"><h6 class="attribute-header"><img draggable="false" class="attribute-icon" src="svg/fuel_gas.svg"></h6></li>
+                            </ul>
+                        </li>
+
+                        <li class="list-item" draggable="true">
+                            <h5 class="item-title">Autobus</h5>
+
+                            <ul class="item-attribute">
+                                <li id="attribute-time" class="attribute-entry"><h6 class="attribute-header">10 min</h6></li>
+                            </ul>
+                        </li>
+
+                        <li class="list-item" draggable="true">
+                            <h5 class="item-title">Taxi</h5>
+
+                            <ul class="item-attribute">
+                                <li id="attribute-time" class="attribute-entry"><h6 class="attribute-header">10 min</h6></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </aside>
+
+                <aside id="food" class="sidebar-collapse collapsed">
+                    <header class="collapse-heading">
+                        <h3 class="heading-title">Nourriture</h3>
+
+                        <!-- Close Btn -->
+                        <button class="heading-close">
+                            <img draggable="false" class="close-icon" src="svg/arrow_back.svg">
+                        </button>
+                    </header>
+
+                    <ul class="sidebar-list collapse-list">
+                        <!-- Dynamic Content -->
+                        <li class="list-item" draggable="true">
+                            <h5 class="item-title">Repas</h5>
+
+                            <ul class="item-attribute">
+                                <li id="attribute-time" class="attribute-entry"><h6 class="attribute-header">100 cals</h6></li>
+                            </ul>
+                        </li>
+
+                        <li class="list-item" draggable="true">
+                            <h5 class="item-title">Fast-Food</h5>
+
+                            <ul class="item-attribute">
+                                <li id="attribute-time" class="attribute-entry"><h6 class="attribute-header">100 cals</h6></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </aside>
+            </aside>
+
+            <main class="content-main">
+                <!--
+                    <header class="main-header">
+                        <div class="header-description">
+                            <h1 class="description-heading">Ma Journée Écologique</h1>
+                            
+                            <p class="description-subtitle">Cette outil est fait afin de sensibiliser et permettre à la communauté étudiante de faire des action considérables envers la situation climatique actuelle</p>
+                        </div>
+                    </header>
+                -->
+
+                <div class="main-schedule">
+                    <div class="schedule-grid">
+                        <div class="grid-row"><p class="row-time">2h</p></div>
+                        <div class="grid-row"><p class="row-time">4h</p></div>
+                        <div class="grid-row"><p class="row-time">6h</p></div>
+                        <div class="grid-row"><p class="row-time">8h</p></div>
+                        <div class="grid-row"><p class="row-time">10h</p></div>
+                        <div class="grid-row"><p class="row-time">12h</p></div>
+                        <div class="grid-row"><p class="row-time">14h</p></div>
+                        <div class="grid-row"><p class="row-time">16h</p></div>
+                        <div class="grid-row"><p class="row-time">18h</p></div>
+                        <div class="grid-row"><p class="row-time">20h</p></div>
+                        <div class="grid-row"><p class="row-time">22h</p></div>
+                        <div class="grid-row"><p class="row-time">24h</p></div>
+                    </div>
+                </div>
+
+                <div class="main-results">
+
+                </div>
+
+                <div class="main-feedback">
+
+                </div>
+            </main>
+        </div>
+    </body>
+
+    <script defer type="module" src="script.js"></script>
+</html>
