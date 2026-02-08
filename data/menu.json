@@ -1,6 +1,12 @@
 {
   "menu":[
     "menu_transport",
-    "menu_nourriture"
+    "menu_nourriture",
+    "menu_hygiene",
+    "menu_loisirs",
+    "menu_activite",
+    "menu_achats",
+    "menu_energie",
+    "menu_entretien"
   ]
 }

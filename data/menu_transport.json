@@ -6,19 +6,43 @@
       "id": 1,
       "nom": "voiture",
       "attributs": ["temps", "passagers", "carburant"],
-      "formule": "(duree * carburant) / passagers"
+      "formule": "((temps / 60) * carburant) / passagers"
     },
     {
       "id": 2,
-      "nom": "Autobus",
+      "nom": "autobus",
       "attributs": ["temps"],
-      "formule": ""
+      "formule": "(temps / 60) * 0.108"
     },
     {
       "id": 3,
-      "nom": "Taxi",
+      "nom": "vélo",
+      "attributs": [],
+      "formule": "0"
+    },
+    {
+      "id": 4,
+      "nom": "marche",
+      "attributs": [],
+      "formule": "0"
+    },
+    {
+      "id": 5,
+      "nom": "taxi",
+      "attributs": ["temps", "passagers"],
+      "formule": "((temps / 60) * 5) / passengers"
+    },
+    {
+      "id": 6,
+      "nom": "uber",
+      "attributs": ["temps", "passagers"],
+      "formule": "((temps / 60) * 4) / passengers"
+    },
+    {
+      "id": 7,
+      "nom": "train",
       "attributs": ["temps"],
-      "formule": ""
+      "formule": "(temps / 60) * 0.0096"
     }
   ]
 }

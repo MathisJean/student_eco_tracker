@@ -1,0 +1,42 @@
+{
+  "nom": "entretien",
+  "couleur": "#17becf",
+  "items": [
+    {
+      "id": 1,
+      "nom": "Lave-vaisselle",
+      "attributs": ["nombre"],
+      "formule": "nombre * 0.8"
+    },
+    {
+      "id": 2,
+      "nom": "Lessive",
+      "attributs": ["nombre"],
+      "formule": "nombre * 0.7"
+    },
+    {
+      "id": 3,
+      "nom": "Aspirateur",
+      "attributs": ["temps"],
+      "formule": "(temps / 60) * 0.2"
+    },
+    {
+      "id": 4,
+      "nom": "Déchets ménagers",
+      "attributs": ["masse"],
+      "formule": "masse * 1.0"
+    },
+    {
+      "id": 5,
+      "nom": "Recyclage",
+      "attributs": ["masse"],
+      "formule": "masse * 0.1"
+    },
+    {
+      "id": 6,
+      "nom": "Compost",
+      "attributs": ["masse"],
+      "formule": "masse * 0.05"
+    }
+  ]
+}

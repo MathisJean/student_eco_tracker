@@ -1,0 +1,24 @@
+{
+  "nom": "energie",
+  "couleur": "#FFDE21",
+  "items": [
+    {
+      "id": 1,
+      "nom": "chauffage électrique",
+      "attributs": [],
+      "formule": "0.45"
+    },
+    {
+      "id": 2,
+      "nom": "chauffage gaz",
+      "attributs": [],
+      "formule": "1.8"
+    },
+    {
+      "id": 3,
+      "nom": "chauffage à l'huile",
+      "attributs": [],
+      "formule": "2.4"
+    }
+  ]
+}

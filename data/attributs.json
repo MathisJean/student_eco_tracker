@@ -1,5 +1,10 @@
 {
-    "temps": { "type": "number", "min": 1, "valeur": 10, "max": 120, "unite": "minutes" },
+    "temps": { "type": "number", "min": 1, "valeur": 20, "max": 120, "unite": "minutes" },
+    "nombre": { "type": "number", "min": 1, "valeur": 1, "max": 999, "unite": "quantite" },
+    "montant": { "type": "number", "min": 1, "valeur": 10, "max": 999, "unite": "dollars" },
+    "masse": { "type": "number", "min": 0, "valeur": 5, "max": 999, "unite": "kilogrammes" },
+    "assiettes": { "type": "number", "min": 1, "valeur": 1, "max": 100, "unite": "assiettes" },
+    "puissance": { "type": "number", "min": 0, "valeur": 10, "max": 999, "unite": "kilowatt" },
     "passagers": { "type": "number", "min": 1, "valeur": 1, "max": 10, "unite": "passagers" },
     "carburant" : { "type": "select", "valeur": { "essence": 2.31, "diesel": 2.68, "electrique": 0.12, "hybride": 1.50, "hybride rechargeable": 0.90 }, "unite": "kgCO2_h" }
 }   

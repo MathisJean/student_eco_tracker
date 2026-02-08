@@ -1,18 +1,66 @@
+{
+  "nom": "nourriture",
+  "couleur": "#5FAF8A",
+  "items": [
     {
-      "nom": "nourriture",
-      "couleur": "#5FAF8A",
-      "items": [
-        {
-          "id": 1,
-          "nom": "Repas Maison",
-          "attributs": [],
-          "formule": ""
-        },
-        {
-          "id": 2,
-          "nom": "Autobus",
-          "attributs": [],
-          "formule": ""
-        }
-      ]
+      "id": 1,
+      "nom": "repas maison",
+      "attributs": ["assiettes"],
+      "formule": "assiettes * 2.0"
+    },
+    {
+      "id": 2,
+      "nom": "repas maison végétarien",
+      "attributs": ["assiettes"],
+      "formule": "assiettes * 1.0"
+    },
+    {
+      "id": 3,
+      "nom": "fast-food",
+      "attributs": ["assiettes"],
+      "formule": "assiettes * 3.0"
+    },
+    {
+      "id": 4,
+      "nom": "café maison",
+      "attributs": ["assiettes"],
+      "formule": "assiettes * 0.07"
+    },
+    {
+      "id": 5,
+      "nom": "café à emporter",
+      "attributs": ["assiettes"],
+      "formule": "assiettes * 0.3"
+    },
+    {
+      "id": 6,
+      "nom": "boisson sucrée",
+      "attributs": ["assiettes"],
+      "formule": "assiettes * 0.2"
+    },
+    {
+      "id": 7,
+      "nom": "snack emballé",
+      "attributs": ["assiettes"],
+      "formule": "assiettes * 0.1"
+    },
+    {
+      "id": 8,
+      "nom": "distributeur",
+      "attributs": ["assiettes"],
+      "formule": "assiettes * 0.4"
+    },
+    {
+      "id": 9,
+      "nom": "dessert industriel",
+      "attributs": ["assiettes"],
+      "formule": "assiettes * 0.4"
+    },
+    {
+      "id": 10,
+      "nom": "boisson alcoolisée",
+      "attributs": ["assiettes"],
+      "formule": "assiettes * 0.3"
     }
+  ]
+}

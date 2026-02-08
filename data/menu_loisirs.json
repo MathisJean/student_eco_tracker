@@ -1,0 +1,36 @@
+{
+  "nom": "loisirs",
+  "couleur": "#FFC067",
+  "items": [
+    {
+      "id": 1,
+      "nom": "musculation",
+      "attributs": ["temps"],
+      "formule": "(temps / 60) * 0.4"
+    },
+    {
+      "id": 2,
+      "nom": "natation",
+      "attributs": ["temps"],
+      "formule": "(temps / 60) * 0.6"
+    },
+    {
+      "id": 3,
+      "nom": "jeux vidéo",
+      "attributs": ["temps"],
+      "formule": "(temps / 60) * 0.05"
+    },
+    {
+      "id": 4,
+      "nom": "télévision",
+      "attributs": ["temps"],
+      "formule": "(temps / 60) * 0.03"
+    },
+    {
+      "id": 5,
+      "nom": "cinéma",
+      "attributs": ["nombre"],
+      "formule": "nombre * 0.5"
+    }
+  ]
+}

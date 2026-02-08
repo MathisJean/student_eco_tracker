@@ -1,0 +1,24 @@
+{
+  "nom": "achats",
+  "couleur": "#C9A0DC",
+  "items": [
+    {
+      "id": 1,
+      "nom": "épicerie",
+      "attributs": ["montant"],
+      "formule": "(montant / 100) * 5"
+    },
+    {
+      "id": 2,
+      "nom": "vêtements",
+      "attributs": ["montant"],
+      "formule": "(montant / 100) * 25"
+    },
+    {
+      "id": 3,
+      "nom": "électronique",
+      "attributs": ["montant"],
+      "formule": "(montant / 100) * 60"
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "nom": "hygiène",
+  "couleur": "#90D5FF",
+  "items": [
+    {
+      "id": 1,
+      "nom": "douche chaude",
+      "attributs": ["temps"],
+      "formule": "(temps / 60) * 1.8"
+    },
+    {
+      "id": 2,
+      "nom": "douche froide",
+      "attributs": ["temps"],
+      "formule": "(temps / 60) * 0.3"
+    },
+    {
+      "id": 3,
+      "nom": "bain",
+      "attributs": ["nombre"],
+      "formule": "nombre * 1.5"
+    },
+    {
+      "id": 4,
+      "nom": "sèche-cheveux",
+      "attributs": ["temps"],
+      "formule": "(temps / 60) * 0.2"
+    }
+  ]
+}

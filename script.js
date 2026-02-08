@@ -10,6 +10,9 @@ const list_items = [];
 
 let prev_radio = null;
 
+//Cache JSON Data
+const cacheKey = "menus_v19"; // bump version when JSON changes
+
 //Schedule
 const schedule_grid = document.querySelector('.schedule-grid')
 
@@ -22,14 +25,19 @@ const interact_help = document.querySelector('.interact-help')
 const interact_result = document.querySelector('.interact-result')
 const interact_clear = document.querySelector('.interact-clear')
 
+//Popups
+const main_results = document.querySelector('.main-results')
+const main_help = document.querySelector('.main-help')
+
+const results_close = main_results.querySelector('.results-close');
+const help_close = main_help.querySelector('.results-close');
+
 //-- Populate Data --//
 
 const attributes = await fetch('data/attributs.json').then(r => r.json());
 const units = await fetch('data/unites.json').then(r => r.json());
 
 async function load_menus_cached(){
-    const cacheKey = "menus_v1"; // bump version when JSON changes
-
     //If cached
     const cached = localStorage.getItem(cacheKey);
     if(cached){
@@ -76,14 +84,12 @@ menus.forEach(menu => {
     heading_close.addEventListener('click', () => {
         collapse.classList.remove('not-collapsed');
 
-        for(let i = 0; i < menu_items.length; i++){
-            const radio = menu_items[i].querySelector('input[type="radio"]');
-    
-            if(radio.checked){
-                radio.checked = false;
-                break;
-            }
-        };
+        const radio = menu_item.querySelector('input[type="radio"]');
+
+        if(radio.checked){
+            radio.checked = false;
+            localStorage.setItem("selected_menu", null);
+        }
     });
 
     //If a Menu is Checked
@@ -115,7 +121,7 @@ menus.forEach(menu => {
     const list_fragment = document.createDocumentFragment();
     
     menu.items.forEach(item => {        
-        const list_item = build_list_item(item.nom, menu.couleur);
+        const list_item = build_list_item(item.nom, menu.couleur, menu.nom);
         list_fragment.append(list_item);
         list_items.push(list_item);
 
@@ -148,8 +154,10 @@ menus.forEach(menu => {
                 input.disabled = false;
 
                 input.addEventListener('change', () => {
+                    const option = input.selectedOptions[0];
+
                     const icon = input.previousElementSibling;
-                    icon.src = `svg/${input.value}.svg`
+                    icon.src = `svg/${option.dataset.name}.svg`
                 });
             });
             
@@ -244,6 +252,83 @@ schedule_grid.addEventListener('drop', event => {
     drop_row.append(list_item);
 });
 
+//-- Help Btn --//
+/*
+help_close.addEventListener('click', () => {
+    main_help.style.pointerEvents = 'none';
+    main_help.style.opacity = 0;
+});
+
+interact_help.addEventListener('click', () => {
+    main_help.style.pointerEvents = 'all';
+    main_help.style.opacity = 1;
+    main_help.focus();
+});
+
+main_help.addEventListener('blur', () => {
+    main_help.style.pointerEvents = 'none';
+    main_help.style.opacity = 0;
+});
+*/
+//-- Results Btn --//
+
+results_close.addEventListener('click', () => {
+    main_results.style.pointerEvents = 'none';
+    main_results.style.opacity = 0;
+});
+
+main_results.addEventListener('blur', () => {
+    main_results.style.pointerEvents = 'none';
+    main_results.style.opacity = 0;
+});
+
+interact_result.addEventListener('click', () => {
+    let total_carbon_impact = 0;
+    let total_per_category = {};
+
+    Array.from(schedule_grid.children).forEach(row => {
+        row.querySelectorAll('.list-item').forEach(list_item => {
+            const category = list_item.dataset.category || 'autres';
+            
+            const name = list_item.querySelector('.item-title').textContent.trim().toLowerCase();
+            const item = find_item_by_name(name);
+            console.log(name)
+            
+            let values = {};
+            
+            const attributes = Array.from(list_item.querySelectorAll('.attribute-entry'));
+            attributes.forEach(attribute => {
+                const value = attribute.querySelector('input, select').value.trim();
+                values[attribute.dataset.name] = value;
+            });
+            
+            const emission = calculate_emissions(item, values);
+            
+            total_carbon_impact += emission;
+
+            if(!total_per_category[category]){
+                const category_color = getComputedStyle(list_item).getPropertyValue('--color').trim();
+                total_per_category[category] = { emission: 0, color: category_color };
+            };
+            total_per_category[category]['emission'] += emission;
+        });
+    });
+
+    draw_category_pie_chart(total_per_category);
+
+    draw_normal_distribution(total_carbon_impact);
+    const percentile = normalCDF(total_carbon_impact, MEAN, STD_DEV) * 100;
+    
+    main_results.querySelector('.percentile-ranking').querySelector('.percentile').innerText = `${(100 - percentile).toFixed(1)}%`;
+    main_results.querySelector('h1').querySelector('.emission').innerText = total_carbon_impact.toFixed(1);
+    
+    main_results.style.pointerEvents = 'all';
+    main_results.style.opacity = 1;
+    main_results.focus();
+});
+
+//-- Clear Btn --//
+
 interact_clear.addEventListener('click', () => {
     Array.from(schedule_grid.children).forEach(row => {
         row.querySelectorAll('.list-item').forEach(item => {
@@ -252,6 +337,180 @@ interact_clear.addEventListener('click', () => {
         });
     });
 });
+
+//NORMAL DISTRIBUTION GRAPH
+const MEAN = 20;     // kgCO2e/day
+const STD_DEV = 7;   // kgCO2e/day
+
+function normalPDF(x, mean, stdDev) {
+    const a = 1 / (stdDev * Math.sqrt(2 * Math.PI));
+    const b = Math.exp(-0.5 * Math.pow((x - mean) / stdDev, 2));
+    return a * b;
+}
+
+function draw_normal_distribution(userValue) {
+    const ctx = document.getElementById('chart-distribution');
+
+    //Generate X and Y values
+    const xs = [];
+    const ys = [];
+
+    for(let x = 0; x <= 45; x += 1) {   // 0–60 kg/day covers all realistic values
+        xs.push(x);
+        ys.push(normalPDF(x, MEAN, STD_DEV));
+    }
+
+    //Destroy previous chart if it exists
+    if(window.distributionChart) {
+        window.distributionChart.destroy();
+    }
+
+    window.distributionChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: xs,
+            datasets: [
+                {
+                    label: 'Population',
+                    data: ys,
+                    borderColor: '#000000',
+                    borderWidth: 4,
+                    tension: 0.4,
+                    pointRadius: 0
+                },
+                {
+                    label: 'You',
+                    data: xs.map(x => x === Math.round(userValue) ? normalPDF(x, MEAN, STD_DEV) : null),
+                    borderColor: '#E07474',
+                    pointBackgroundColor: '#E07474',
+                    pointRadius: 6,
+                    type: 'scatter'
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: {
+                    title: { display: true, text: '' },
+                    grid: { display: false },
+                    border: { display: false }
+                },
+                y: {
+                    grid: { display: false },
+                    border: { display: false },
+                    display: false
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
+        }
+    });
+}
+
+function normalCDF(x, mean, stdDev) {
+    return 0.5 * (1 + erf((x - mean) / (stdDev * Math.sqrt(2))));
+}
+
+function erf(x) {
+    // Numerical approximation of the error function
+    const sign = x >= 0 ? 1 : -1;
+    x = Math.abs(x);
+
+    const a1 = 0.254829592;
+    const a2 = -0.284496736;
+    const a3 = 1.421413741;
+    const a4 = -1.453152027;
+    const a5 = 1.061405429;
+    const p = 0.3275911;
+
+    const t = 1 / (1 + p * x);
+    const y = 1 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-x * x);
+
+    return sign * y;
+}
+
+function draw_category_pie_chart(total_per_category) {
+    const ctx = document.getElementById('pie-category');
+
+    if(window.categoryChart) {
+        window.categoryChart.destroy();
+    }
+
+    const categories = Object.keys(total_per_category);
+    const allZero = categories.every(cat => total_per_category[cat].emission === 0);
+
+    // Fallback: empty chart → black full circle
+    if(categories.length === 0 || allZero) {
+        window.categoryChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: ["Aucune donnée"],
+                datasets: [{
+                    data: [1],
+                    backgroundColor: ["#000000"]
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+        return;
+    }
+
+    // Normal dynamic chart
+    const labels = categories;
+    const data = categories.map(cat => total_per_category[cat].emission);
+    const colors = categories.map(cat => total_per_category[cat].color);
+
+    window.categoryChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: data,
+                backgroundColor: colors,
+                borderWidth: 1,
+                borderColor: "#fff"
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
+        }
+    });
+}
+
+function find_item_by_name(name){
+    for(const menu of Object.values(menus)){
+        const item = menu.items.find(i => i.nom.toLowerCase() === name.toLowerCase());
+        if(item) return item;
+    }
+    return null;
+}
+
+//Function to Calculate Emission Rate Based on Formula + Variables
+function calculate_emissions(item, values){
+    const formula = item?.formule;
+
+    if(!formula) return 0;
+
+    const fn = new Function(...Object.keys(values), `return ${formula};`);
+
+    return fn(...Object.values(values));
+}
 
 //-- Building Dynamic Menus --//
 
@@ -292,10 +551,11 @@ function build_menu_item(name, color){
     return label;
 }
 
-function build_list_item(name, color){
+function build_list_item(name, color, category){
     const li = document.createElement('li');
     
     li.draggable = "true";
+    li.dataset.category = category;
     li.className = "list-item";
     li.style.setProperty('--color', color);
     
@@ -312,7 +572,8 @@ function build_list_item(name, color){
 
 function build_attribute_entry(name, attribute){    
     const li = document.createElement('li');
-    li.className = "attribute-entry";
+    li.className = `attribute-entry`;
+    li.dataset.name = name;
     let html = null;
 
     switch(attribute.type){
@@ -347,7 +608,7 @@ function build_attribute_entry(name, attribute){
             let html_options = "";
 
             Object.entries(attribute.valeur).forEach(([key, value]) => {
-                html_options += `<option value="${name}_${key}">${key.charAt(0).toUpperCase() + key.slice(1)}</option>`;
+                html_options += `<option value="${value}" data-name="${name}_${key}">${key.charAt(0).toUpperCase() + key.slice(1)}</option>`;
             });
 
             html = `

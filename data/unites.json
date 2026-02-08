@@ -1,6 +1,11 @@
 {
     "minutes": { "type": "texte", "valeur": "min" },
     "heures": { "type": "texte", "valeur": "h" },
+    "dollars": { "type": "texte", "valeur": "$" },
+    "kilogrammes": { "type": "texte", "valeur": "kg" },
+    "kilowatt": { "type": "texte", "valeur": "kW" },
+    "kgCO2_h": { "type": "texte", "valeur": "kgCO2/h" },
+    "assiettes": { "type": "svg", "valeur": "svg/assiette.svg" },
     "passagers": { "type": "svg", "valeur": "svg/passager.svg" },
-    "kgCO2_h": { "type": "texte", "valeur": "kgCO2/h" }
+    "quantite": { "type": "svg", "valeur": "svg/quantite.svg" }
 }

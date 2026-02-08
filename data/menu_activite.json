@@ -1,0 +1,42 @@
+{
+  "nom": "activité",
+  "couleur": "#E07474",
+  "items": [
+    {
+      "id": 1,
+      "nom": "travail au bureau",
+      "attributs": ["temps"],
+      "formule": "(temps / 60) * 0.1"
+    },
+    {
+      "id": 2,
+      "nom": "travail à domicile",
+      "attributs": ["temps"],
+      "formule": "(temps / 60) * 0.05"
+    },
+    {
+      "id": 3,
+      "nom": "école",
+      "attributs": ["temps"],
+      "formule": "(temps / 60) * 0.08"
+    },
+    {
+      "id": 4,
+      "nom": "université",
+      "attributs": ["temps"],
+      "formule": "(temps / 60) * 0.08"
+    },
+    {
+      "id": 5,
+      "nom": "collège",
+      "attributs": ["temps"],
+      "formule": "(temps / 60) * 0.08"
+    },
+    {
+      "id": 6,
+      "nom": "étude à la maison",
+      "attributs": ["temps"],
+      "formule": "(temps / 60) * 0.03"
+    }
+  ]
+}
