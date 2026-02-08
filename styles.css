@@ -12,6 +12,8 @@
 
 html,
 body{
+    overflow: hidden;
+
     margin: 0%;
     padding: 0%;
 }
@@ -32,6 +34,21 @@ html{
 
     --line: 2px;
     --line-color: rgb(255, 255, 255);
+
+    --shadow: 2px 4px 4px 0px rgba(0, 0, 0, 0.1);
+    --shadow-dark: 2px 4px 4px 0px rgba(0, 0, 0, 0.2);
+}
+
+/* Chrome, Edge, Safari */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
 }
 
 /*-- Navbar --*/
@@ -108,14 +125,21 @@ html{
     border-radius: var(--border-rad-sml);
 
     background-color: var(--main-bod);
+    box-shadow: var(--shadow);
 
     aspect-ratio: 1;
 
-    transition: background-color 200ms ease;
+    transition: background-color 200ms ease, box-shadow 200ms ease;
+
+    cursor: pointer;
 }
 
 .menu-item:has(input[type='radio']:checked){
     background-color: var(--color);
+}
+
+.menu-item:hover{
+    box-shadow: var(--shadow-dark);
 }
 
 .sidebar-collapse{
@@ -127,24 +151,25 @@ html{
     left: var(--sidebar-width);
 
     background-color: var(--main-bod);
+    box-shadow: var(--shadow);
 
     gap: 0.5em;
     padding: 0.5em;
 
     height: 100%;   
 
-    border-right: 5px solid var(--second-bod);
-
-    overflow: auto;
+    overflow: none;
 
     transition: transform ease 500ms;
 
     z-index: 4;
-}
 
-.collapsed{
     transform: translateX(-200%);
     will-change: transform;
+}
+
+.not-collapsed{
+    transform: translateX(0%) !important;
 }
 
 .collapse-heading{
@@ -195,10 +220,25 @@ html{
 
     border-radius: var(--border-rad-sml);
 
-    background-color: var(--color);
     color: white;
+    background-color: var(--color);
+    box-shadow: var(--shadow);
 
     aspect-ratio: var(--bloc-aspect-ratio);
+
+    cursor: grab;
+
+    transition: opacity 50ms ease;
+}
+
+.list-item input[disabled], .list-item select[disabled],
+.list-item label:has(input[disabled]), .list-item label:has(select[disabled]){
+    pointer-events: none;
+    cursor: grab
+}
+
+.list-item:active{
+    cursor: grabbing;
 }
 
 .item-attribute{
@@ -212,16 +252,53 @@ html{
     list-style: none;
 }
 
-.attribute-header{
+.attribute-entry label{
     display: flex;
-
+    flex-direction: row;
     justify-content: center;
     align-items: center;
+
+    position: relative;
+
+    gap: 0.15em;
+
+    cursor: text;
+}
+
+.attribute-input{
+    color: white;
+    background-color: transparent;
+    border: none;
+
+    font-size: 0.67em;
+    font-weight: 700;
+
+    text-align: right;
+
+    overflow: visible;
+}
+
+.attribute-select{    
+    position: absolute;
+
+    color: black;
+    background-color: var(--second-bod);
+
+    opacity: 0;
+
+    width: 100%;
+
+    z-index: 2;
+    cursor: pointer;
+}
+
+.attribute-select option{
+    cursor: pointer;
 }
 
 .attribute-icon{
     aspect-ratio: 1;
-    width: 1.25em;
+    width: 0.9em;
 }
 
 /*-- Main --*/
@@ -230,6 +307,8 @@ html{
     flex-direction: column;
     justify-content: baseline;
     align-items: baseline;
+
+    position: relative;
 
     gap: 1em;
     padding: 1em;
@@ -269,6 +348,7 @@ html{
     border-radius: var(--border-rad-lrg);
 
     background-color: var(--second-bod);
+    box-shadow: var(--shadow);
 }
 
 html{
@@ -314,5 +394,52 @@ html{
     font-weight: 600;
     color: var(--line-color);
     z-index: 5;
+}
+
+.main-interact{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    position: absolute;
+    bottom: 0%;
+    right: 0%;
+
+    padding: 1em;
+    gap: 1em;
+}
+
+.interact-btn{
+    padding: 1em;
+
+    border: none;
+    border-radius: var(--border-rad-sml);
+
+    color: white;
+    box-shadow: var(--shadow);
+    
+    font-weight: 600;
+
+    transition: transform 200ms ease;
+}
+
+.interact-btn:hover{
+    box-shadow: var(--shadow-dark);
+}
+
+.interact-btn:active{
+    transform: translateY(3px);
+}
+
+.interact-help{
+    background-color: #0077ff;
+}
+
+.interact-result{
+    background-color: #0077ff;
+}
+
+.interact-clear{
+    background-color: #E07474;
 }
 

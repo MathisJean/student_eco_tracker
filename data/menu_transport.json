@@ -1,0 +1,24 @@
+{
+  "nom": "transport",
+  "couleur": "#0077ff",
+  "items": [
+    {
+      "id": 1,
+      "nom": "voiture",
+      "attributs": ["temps", "passagers", "carburant"],
+      "formule": "(duree * carburant) / passagers"
+    },
+    {
+      "id": 2,
+      "nom": "Autobus",
+      "attributs": ["temps"],
+      "formule": ""
+    },
+    {
+      "id": 3,
+      "nom": "Taxi",
+      "attributs": ["temps"],
+      "formule": ""
+    }
+  ]
+}

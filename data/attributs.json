@@ -1,0 +1,5 @@
+{
+    "temps": { "type": "number", "min": 1, "valeur": 10, "max": 120, "unite": "minutes" },
+    "passagers": { "type": "number", "min": 1, "valeur": 1, "max": 10, "unite": "passagers" },
+    "carburant" : { "type": "select", "valeur": { "essence": 2.31, "diesel": 2.68, "electrique": 0.12, "hybride": 1.50, "hybride rechargeable": 0.90 }, "unite": "kgCO2_h" }
+}   

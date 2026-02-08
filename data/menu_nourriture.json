@@ -1,0 +1,18 @@
+    {
+      "nom": "nourriture",
+      "couleur": "#5FAF8A",
+      "items": [
+        {
+          "id": 1,
+          "nom": "Repas Maison",
+          "attributs": [],
+          "formule": ""
+        },
+        {
+          "id": 2,
+          "nom": "Autobus",
+          "attributs": [],
+          "formule": ""
+        }
+      ]
+    }

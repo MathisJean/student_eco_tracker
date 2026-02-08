@@ -1,0 +1,6 @@
+{
+    "minutes": { "type": "texte", "valeur": "min" },
+    "heures": { "type": "texte", "valeur": "h" },
+    "passagers": { "type": "svg", "valeur": "svg/passager.svg" },
+    "kgCO2_h": { "type": "texte", "valeur": "kgCO2/h" }
+}
