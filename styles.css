@@ -51,17 +51,6 @@ input[type="number"] {
   -moz-appearance: textfield;
 }
 
-.help-cursor{
-  width: 14px;
-  height: 14px;
-  background: black;
-  clip-path: polygon(0 0, 100% 50%, 0 100%);
-  position: fixed;
-  top: 0;
-  left: 0;
-  pointer-events: none; /* so it never blocks real clicks */
-}
-
 /*-- Navbar --*/
 .navbar{
     display: flex;
@@ -130,6 +119,8 @@ input[type="number"] {
     justify-content: center;
     align-items: center;
 
+    position: relative;
+
     padding: 0.75em;
 
     border: none;
@@ -151,6 +142,47 @@ input[type="number"] {
 
 .menu-item:hover{
     box-shadow: var(--shadow-dark);
+}
+
+.menu-item::after{
+  content: attr(data-label);
+  position: absolute;
+  top: 50%;
+  left: calc(100% + 0.5em);
+
+  background: var(--color);
+  color: white;
+
+  font-weight: 700;
+
+  padding: 0.5em;
+  
+  border-radius: var(--border-rad-sml);
+  box-shadow: var(--shadow);
+  
+  white-space: nowrap;
+  
+  pointer-events: none;
+
+  opacity: 0;
+
+  transform: translateY(-50%);
+
+  z-index: 10;
+
+  transition: opacity 0.2s ease;
+}
+
+.menu-item:hover::after {
+  opacity: 1;
+}
+
+.item-icon{
+    width: 1.5em;
+    aspect-ratio: 1;
+
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 .sidebar-collapse{
@@ -406,7 +438,7 @@ html{
 
     font-weight: 600;
     color: var(--line-color);
-    z-index: 5;
+    z-index: 2;
 }
 
 .main-interact{
@@ -420,6 +452,8 @@ html{
 
     padding: 1em;
     gap: 1em;
+
+    z-index: 3;
 }
 
 .interact-btn{
@@ -489,7 +523,9 @@ html{
 
 .chart-pie{
     display: grid;
-    grid-template-rows: 50% 50%;
+    grid-template-rows: 100%;
+
+    align-items: center;
 
     height: 100%;
 }
@@ -500,7 +536,7 @@ html{
 }
 
 #pie-category {
-    height: 100% !important;
+    height: 50% !important;
     aspect-ratio: 1 / 1 !important;
 }
 
@@ -531,4 +567,29 @@ html{
 
 .interact-clear{
     background-color: #E07474;
+}
+
+.cursor{
+    position: absolute;
+    top: 0%;
+    left: 0%;
+
+    height: 25px;
+
+    aspect-ratio: 1;
+    z-index: 10;
+}
+
+@media (max-width: 480px){
+    :root{
+        font-size: 10px;
+    }
+
+    .close-icon{
+        width: 1em;
+    }
+
+    .main-interact{
+        bottom: 10%;
+    }
 }

@@ -1,6 +1,10 @@
 //-- DOM Elements --//
 const root = document.documentElement;
 
+//Navbar
+const navbar = document.querySelector('.navbar');
+const navbar_logo = document.querySelector('.navbar-logo');
+
 //Menus
 const content_sidebar = document.querySelector('.content-sidebar');
 const sidebar_menu = content_sidebar.querySelector('.sidebar-menu');
@@ -11,26 +15,31 @@ const list_items = [];
 let prev_radio = null;
 
 //Cache JSON Data
-const cacheKey = "menus_v19"; // bump version when JSON changes
+const cacheKey = "menus_v23"; // bump version when JSON changes
 
 //Schedule
-const schedule_grid = document.querySelector('.schedule-grid')
+const schedule_grid = document.querySelector('.schedule-grid');
 
 //Dragging + Resizing Inputs
 let dragged_el = null;
 let resize_span = null;
 
 //Interaction Btns
-const interact_help = document.querySelector('.interact-help')
-const interact_result = document.querySelector('.interact-result')
-const interact_clear = document.querySelector('.interact-clear')
+const interact_help = document.querySelector('.interact-help');
+const interact_result = document.querySelector('.interact-result');
+const interact_clear = document.querySelector('.interact-clear');
 
 //Popups
-const main_results = document.querySelector('.main-results')
-const main_help = document.querySelector('.main-help')
+const main_results = document.querySelector('.main-results');
+const main_help = document.querySelector('.main-help');
 
 const results_close = main_results.querySelector('.results-close');
 const help_close = main_help.querySelector('.results-close');
+
+//Navbar Context Menu
+navbar_logo.addEventListener("contextmenu", e => {
+    e.preventDefault();
+});
 
 //-- Populate Data --//
 
@@ -92,6 +101,16 @@ menus.forEach(menu => {
         }
     });
 
+    //Prevent Context Menu
+    menu_item.addEventListener("contextmenu", e => {
+        e.preventDefault();
+    });
+
+    //Prevent Context Menu
+    heading_close.addEventListener("contextmenu", e => {
+        e.preventDefault();
+    });
+
     //If a Menu is Checked
     const radio = menu_item.querySelector('input[type="radio"]');
     
@@ -124,6 +143,11 @@ menus.forEach(menu => {
         const list_item = build_list_item(item.nom, menu.couleur, menu.nom);
         list_fragment.append(list_item);
         list_items.push(list_item);
+
+        //Prevent Context Menu
+        list_item.addEventListener("contextmenu", e => {
+            e.preventDefault();
+        });
 
         //Set drag start event
         list_item.addEventListener('dragstart', event => {
@@ -253,12 +277,87 @@ schedule_grid.addEventListener('drop', event => {
 });
 
 //-- Help Btn --//
-/*
-help_close.addEventListener('click', () => {
-    main_help.style.pointerEvents = 'none';
-    main_help.style.opacity = 0;
-});
 
+interact_help.addEventListener('click', help_cursor);
+
+async function help_cursor(){
+    interact_help.removeEventListener('click', help_cursor);
+    
+    let cursor = document.createElement('img');
+    cursor.classList.add('cursor');
+    cursor.src = 'img/cursor.png';
+    
+    document.body.append(cursor);
+    const wait_time = 300;
+    
+    await animate_between(cursor, interact_help, menu_items[0], cursor, 'cursor', 'pointer')
+    menu_items[0].click();
+    
+    setTimeout(async () => {
+        await animate_between(cursor, menu_items[0], list_items[0], cursor, 'pointer', 'grab');
+        
+        setTimeout(async () => {
+            const row = schedule_grid.querySelectorAll('.grid-row')[5];
+            await animate_between(cursor, list_items[0], row, cursor, 'grabbing', 'grabbing');
+            
+            const item = list_items[0].cloneNode(true);
+            row.append(item);
+            setTimeout(async () => {
+                await animate_between(cursor, row, navbar, cursor, 'grabbing', 'grabbing');
+
+                item.remove()
+                cursor.remove()
+                interact_help.addEventListener('click', help_cursor);
+            }, wait_time);
+        }, wait_time);
+    }, wait_time);
+}
+
+async function animate_between(el, fromEl, toEl, cursor, cursor_start = 'cursor', cursor_end = 'cursor', time = 0.75){
+    cursor.src = `img/${cursor_start}.png`;
+    
+    return new Promise(resolve => {
+        
+        const startRect = fromEl.getBoundingClientRect();
+        const endRect = toEl.getBoundingClientRect();
+        
+        const startX = startRect.left + window.scrollX + startRect.width / 2;
+        const startY = startRect.top + window.scrollY + startRect.height / 2;
+
+        const endX = endRect.left + window.scrollX + endRect.width / 2;
+        const endY = endRect.top + window.scrollY + endRect.height / 2;
+
+        const distance = Math.hypot(endX - startX, endY - startY);
+        const duration = distance * time;
+        
+        el.style.position = "absolute";
+        el.style.left = startX + "px";
+        el.style.top = startY + "px";
+        
+        const startTime = performance.now();
+        
+        function frame(now) {
+            const progress = Math.min((now - startTime) / duration, 1);
+            
+            const currentX = startX + (endX - startX) * progress;
+            const currentY = startY + (endY - startY) * progress;
+
+            el.style.left = currentX + "px";
+            el.style.top = currentY + "px";
+            
+            if (progress < 1) {
+                requestAnimationFrame(frame);
+            } else {
+                resolve(); // <-- promise completes here
+            }
+        }
+        
+        requestAnimationFrame(frame);
+        cursor.src = `img/${cursor_end}.png`;
+    });
+}
+
+/*
 interact_help.addEventListener('click', () => {
     main_help.style.pointerEvents = 'all';
     main_help.style.opacity = 1;
@@ -539,6 +638,7 @@ function build_collapsible(name, color){
 function build_menu_item(name, color){
     const label = document.createElement('label');
 
+    label.dataset.label = name.charAt(0).toUpperCase() + name.slice(1);
     label.className = "menu-item";
     label.style.setProperty('--color', color);
 
