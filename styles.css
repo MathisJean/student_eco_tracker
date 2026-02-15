@@ -149,6 +149,7 @@ input[type="number"] {
   position: absolute;
   top: 50%;
   left: calc(100% + 0.5em);
+  transform: translateY(-50%);
 
   background: var(--color);
   color: white;
@@ -161,16 +162,12 @@ input[type="number"] {
   box-shadow: var(--shadow);
   
   white-space: nowrap;
-  
   pointer-events: none;
 
   opacity: 0;
-
-  transform: translateY(-50%);
-
   z-index: 10;
 
-  transition: opacity 0.2s ease;
+  transition: opacity 200ms ease;
 }
 
 .menu-item:hover::after {
@@ -270,6 +267,7 @@ input[type="number"] {
     aspect-ratio: var(--bloc-aspect-ratio);
 
     cursor: grab;
+    touch-action: none;
 
     transition: opacity 100ms ease;
 }
@@ -466,6 +464,7 @@ html{
     box-shadow: var(--shadow);
     
     font-weight: 600;
+    font-size: 1em;
 
     transition: transform 200ms ease;
 }
@@ -486,7 +485,7 @@ html{
     background-color: #0077ff;
 }
 
-.main-results, .main-help{
+.main-results{
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -510,6 +509,8 @@ html{
     pointer-events: none;
 
     transition: opacity 100ms ease;
+
+    z-index: 6;
 }
 
 .chart{
@@ -591,5 +592,29 @@ html{
 
     .main-interact{
         bottom: 10%;
+    }
+
+    .main-results{
+        font-size: 0.75em;
+
+        width: 80%;
+        height: auto;
+    }
+
+    .chart{
+        flex-direction: column;
+    }
+
+    .chart-pie{
+        height: auto;
+    }
+
+    #pie-category{
+        height: auto !important;
+        width: 100%;
+    }
+
+    #chart-distribution{
+        height: auto !important;
     }
 }

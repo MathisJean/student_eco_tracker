@@ -31,10 +31,8 @@ const interact_clear = document.querySelector('.interact-clear');
 
 //Popups
 const main_results = document.querySelector('.main-results');
-const main_help = document.querySelector('.main-help');
 
 const results_close = main_results.querySelector('.results-close');
-const help_close = main_help.querySelector('.results-close');
 
 //Navbar Context Menu
 navbar_logo.addEventListener("contextmenu", e => {
@@ -313,7 +311,7 @@ async function help_cursor(){
     }, wait_time);
 }
 
-async function animate_between(el, fromEl, toEl, cursor, cursor_start = 'cursor', cursor_end = 'cursor', time = 0.75){
+async function animate_between(el, fromEl, toEl, cursor, cursor_start = 'cursor', cursor_end = 'cursor', time = 1){
     cursor.src = `img/${cursor_start}.png`;
     
     return new Promise(resolve => {
