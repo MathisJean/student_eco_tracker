@@ -298,35 +298,63 @@ interact_help.addEventListener('click', help_cursor);
 
 async function help_cursor(){
     interact_help.removeEventListener('click', help_cursor);
-    
-    let cursor = document.createElement('img');
-    cursor.classList.add('cursor');
-    cursor.src = 'img/cursor.png';
-    
-    document.body.append(cursor);
-    const wait_time = 300;
-    
-    await animate_between(cursor, interact_help, menu_items[0], cursor, 'cursor', 'pointer')
-    menu_items[0].click();
-    
-    setTimeout(async () => {
+
+    try{
+        let cursor = document.createElement('img');
+        cursor.classList.add('cursor');
+        cursor.src = 'img/cursor.png';
+        document.body.append(cursor);
+
+        const wait_time = 500;
+
+        if(!interact_help || !menu_items[0] || !list_items[0]) {
+            throw new Error('One of the required elements is missing.');
+        }
+
+        await animate_between(cursor, interact_help, menu_items[0], cursor, 'cursor', 'pointer');
+        menu_items[0].click();
+
+        await new Promise(r => setTimeout(r, wait_time));
         await animate_between(cursor, menu_items[0], list_items[0], cursor, 'pointer', 'grab');
         
-        setTimeout(async () => {
-            const row = schedule_grid.querySelectorAll('.grid-row')[5];
-            await animate_between(cursor, list_items[0], row, cursor, 'grabbing', 'grabbing');
-            
-            const item = list_items[0].cloneNode(true);
-            row.append(item);
-            setTimeout(async () => {
-                await animate_between(cursor, row, navbar, cursor, 'grabbing', 'grabbing');
+        const row = schedule_grid.querySelectorAll('.grid-row')[5];
+        if(!row) throw new Error('Target grid row not found.');
+        
+        await new Promise(r => setTimeout(r, wait_time));
+        await animate_between(cursor, list_items[0], row, cursor, 'grabbing', 'grabbing');
 
-                item.remove()
-                cursor.remove()
-                interact_help.addEventListener('click', help_cursor);
-            }, wait_time);
-        }, wait_time);
-    }, wait_time);
+        const item = list_items[0].cloneNode(true);
+        row.append(item);
+
+        const attribute = item.querySelector('.attribute-entry');
+        if(!attribute) throw new Error('Attribute entry not found.');
+
+        await animate_between(cursor, row, attribute, cursor, 'grabbing', 'pointer');
+
+        attribute.click();
+
+        await new Promise(r => setTimeout(r, wait_time));
+        const input = attribute.querySelector('.attribute-number');
+        if(!input) throw new Error('Input field not found.');
+
+        input.value = input.max;
+
+        await new Promise(r => setTimeout(r, wait_time));
+        main_delete.style.opacity = 1;
+
+        await animate_between(cursor, attribute, main_delete, cursor, 'grabbing', 'grabbing');
+
+        item.remove();
+        cursor.remove();
+        main_delete.style.opacity = 0;
+    }
+    catch(err){
+        console.error('Error in help_cursor:', err);
+        alert('Une erreur est survenue pendant l’animation.');
+    }
+    finally{
+        interact_help.addEventListener('click', help_cursor);
+    }
 }
 
 async function animate_between(el, fromEl, toEl, cursor, cursor_start = 'cursor', cursor_end = 'cursor', time = 1){
@@ -373,18 +401,6 @@ async function animate_between(el, fromEl, toEl, cursor, cursor_start = 'cursor'
     });
 }
 
-/*
-interact_help.addEventListener('click', () => {
-    main_help.style.pointerEvents = 'all';
-    main_help.style.opacity = 1;
-    main_help.focus();
-});
-
-main_help.addEventListener('blur', () => {
-    main_help.style.pointerEvents = 'none';
-    main_help.style.opacity = 0;
-});
-*/
 //-- Results Btn --//
 
 results_close.addEventListener('click', () => {

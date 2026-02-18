@@ -35,8 +35,8 @@ html{
     --line: 2px;
     --line-color: rgb(255, 255, 255);
 
-    --shadow: 2px 4px 4px 0px rgba(0, 0, 0, 0.1);
-    --shadow-dark: 2px 4px 4px 0px rgba(0, 0, 0, 0.2);
+    --shadow: 3px 4px 4px 0px rgba(0, 0, 0, 0.1);
+    --shadow-dark: 3px 4px 3px 0px rgba(0, 0, 0, 0.05);
 }
 
 /* Chrome, Edge, Safari */
@@ -391,7 +391,7 @@ input[type="number"] {
     border-radius: var(--border-rad-lrg);
 
     background-color: var(--second-bod);
-    box-shadow: var(--shadow);
+    box-shadow: var(--shadow), -3px -4px 4px 0px rgba(0, 0, 0, 0.05);
 }
 
 html{
@@ -437,6 +437,8 @@ html{
     font-weight: 600;
     color: var(--line-color);
     z-index: 2;
+
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .main-delete{
