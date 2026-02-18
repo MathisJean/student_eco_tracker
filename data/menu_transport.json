@@ -30,13 +30,13 @@
       "id": 5,
       "nom": "taxi",
       "attributs": ["temps", "passagers"],
-      "formule": "((temps / 60) * 5) / passengers"
+      "formule": "((temps / 60) * 5) / passagers"
     },
     {
       "id": 6,
       "nom": "uber",
       "attributs": ["temps", "passagers"],
-      "formule": "((temps / 60) * 4) / passengers"
+      "formule": "((temps / 60) * 4) / passagers"
     },
     {
       "id": 7,

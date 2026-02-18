@@ -20,9 +20,9 @@ body{
 
 html{
     --main-bod: rgb(255, 255, 255);
-    --second-bod: #ededed;
+    --second-bod: #e4e4e4;
     
-    --navbar-clr: rgb(34, 11, 138);
+    --navbar-clr: rgb(0, 90, 192);
     --navbar-height: 4em;
     --sidebar-width: 4em;
 
@@ -439,6 +439,30 @@ html{
     z-index: 2;
 }
 
+.main-delete{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    position: absolute;
+    bottom: 0%;
+    left: 0%;
+
+    width: 100%;
+    
+    padding: 2em;
+
+    border-radius: var(--border-rad-lrg);
+    background-color: #E07474;
+
+    opacity: 0.0;
+    pointer-events: none;
+
+    z-index: 3;
+
+    transition: opacity 200ms ease;
+}
+
 .main-interact{
     display: flex;
     justify-content: center;
@@ -451,7 +475,7 @@ html{
     padding: 1em;
     gap: 1em;
 
-    z-index: 3;
+    z-index: 2;
 }
 
 .interact-btn{
@@ -548,7 +572,8 @@ html{
     gap: 0.25em;
 }
 
-.percentile-ranking{
+.percentile-ranking,
+.tree-ranking{
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -579,6 +604,12 @@ html{
 
     aspect-ratio: 1;
     z-index: 10;
+}
+
+@media (max-width: 1600px){
+    :root{
+        font-size: 14px;
+    }
 }
 
 @media (max-width: 480px){

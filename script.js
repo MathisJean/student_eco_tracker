@@ -15,10 +15,14 @@ const list_items = [];
 let prev_radio = null;
 
 //Cache JSON Data
-const cacheKey = "menus_v23"; // bump version when JSON changes
+const cacheKey = "menus_v25"; // bump version when JSON changes
 
 //Schedule
 const schedule_grid = document.querySelector('.schedule-grid');
+
+//Delete
+const main_delete = document.querySelector('.main-delete');
+const delete_opacity = 0.75;
 
 //Dragging + Resizing Inputs
 let dragged_el = null;
@@ -152,6 +156,9 @@ menus.forEach(menu => {
             event.dataTransfer.effectAllowed = 'copy';
             const item_clone = list_item.cloneNode(true);
             dragged_el = item_clone;
+
+            //Deletion UI
+            main_delete.style.opacity = delete_opacity;
             
             const input_number = Array.from(item_clone.querySelectorAll('.attribute-number'));
             
@@ -185,14 +192,25 @@ menus.forEach(menu => {
             
             item_clone.addEventListener('dragstart', () => {
                 dragged_el = item_clone;
+
+                //Deletion UI
+                main_delete.style.opacity = delete_opacity;
             });
 
             item_clone.addEventListener('dragend', event => {
                 if(event.dataTransfer.dropEffect === 'none'){
                     item_clone.remove();
                 }
+
+                //Deletion UI
+                main_delete.style.opacity = 0.0;
             });
         }); 
+
+        list_item.addEventListener('dragend', () => {
+            //Deletion UI
+            main_delete.style.opacity = 0.0;
+        });
         
         const attribute_list = list_item.querySelector('.item-attribute')
         const attribute_fragment = document.createDocumentFragment();
@@ -379,65 +397,102 @@ main_results.addEventListener('blur', () => {
     main_results.style.opacity = 0;
 });
 
+// ===============================
+// CONSTANTS
+// ===============================
+
+const DAYS = 365;
+const KG_TO_TONNES = 1000;
+const TREE_CO2 = 0.02;
+
+const MEAN = 20 * DAYS;     // kg CO2e / year
+const STD_DEV = 7 * DAYS;   // kg CO2e / year
+
+// ===============================
+// RESULTS BUTTON
+// ===============================
+
 interact_result.addEventListener('click', () => {
-    let total_carbon_impact = 0;
+
+    let total_carbon_impact = 0;   // always kg/year
     let total_per_category = {};
 
     Array.from(schedule_grid.children).forEach(row => {
         row.querySelectorAll('.list-item').forEach(list_item => {
+
             const category = list_item.dataset.category || 'autres';
-            
-            const name = list_item.querySelector('.item-title').textContent.trim().toLowerCase();
+
+            const name = list_item.querySelector('.item-title')
+                .textContent.trim().toLowerCase();
+
             const item = find_item_by_name(name);
-            console.log(name)
-            
+            if (!item) return;
+
             let values = {};
-            
-            const attributes = Array.from(list_item.querySelectorAll('.attribute-entry'));
+
+            const attributes = Array.from(
+                list_item.querySelectorAll('.attribute-entry')
+            );
+
             attributes.forEach(attribute => {
-                const value = attribute.querySelector('input, select').value.trim();
-                values[attribute.dataset.name] = value;
+                const value = attribute
+                    .querySelector('input, select')
+                    .value.trim();
+                values[attribute.dataset.name] = Number(value) || 0;
             });
-            
-            const emission = calculate_emissions(item, values);
-            
+
+            // convert daily to yearly (kg)
+            const emission = calculate_emissions(item, values) * DAYS;
+
             total_carbon_impact += emission;
 
-            if(!total_per_category[category]){
-                const category_color = getComputedStyle(list_item).getPropertyValue('--color').trim();
-                total_per_category[category] = { emission: 0, color: category_color };
-            };
-            total_per_category[category]['emission'] += emission;
+            if (!total_per_category[category]) {
+                const category_color = getComputedStyle(list_item)
+                    .getPropertyValue('--color')
+                    .trim();
+
+                total_per_category[category] = {
+                    emission: 0,
+                    color: category_color
+                };
+            }
+
+            total_per_category[category].emission += emission;
         });
     });
 
     draw_category_pie_chart(total_per_category);
-
     draw_normal_distribution(total_carbon_impact);
+
     const percentile = normalCDF(total_carbon_impact, MEAN, STD_DEV) * 100;
+
+    main_results.querySelector('.percentile-ranking .percentile').innerText = `${(100 - percentile).toFixed(1)}%`;
+    main_results.querySelector('.tree-ranking .tree').innerText = Math.ceil(total_carbon_impact / KG_TO_TONNES / TREE_CO2);
     
-    main_results.querySelector('.percentile-ranking').querySelector('.percentile').innerText = `${(100 - percentile).toFixed(1)}%`;
-    main_results.querySelector('h1').querySelector('.emission').innerText = total_carbon_impact.toFixed(1);
-    
+    // display in tonnes
+    main_results.querySelector('h1 .emission').innerText = (total_carbon_impact / KG_TO_TONNES).toFixed(2);
+
     main_results.style.pointerEvents = 'all';
     main_results.style.opacity = 1;
     main_results.focus();
 });
 
-//-- Clear Btn --//
+// ===============================
+// CLEAR BUTTON
+// ===============================
 
 interact_clear.addEventListener('click', () => {
     Array.from(schedule_grid.children).forEach(row => {
         row.querySelectorAll('.list-item').forEach(item => {
             item.style.opacity = 0;
-            setTimeout(() => { item.remove() }, 50);
+            setTimeout(() => item.remove(), 50);
         });
     });
 });
 
-//NORMAL DISTRIBUTION GRAPH
-const MEAN = 20;     // kgCO2e/day
-const STD_DEV = 7;   // kgCO2e/day
+// ===============================
+// NORMAL DISTRIBUTION GRAPH
+// ===============================
 
 function normalPDF(x, mean, stdDev) {
     const a = 1 / (stdDev * Math.sqrt(2 * Math.PI));
@@ -446,30 +501,34 @@ function normalPDF(x, mean, stdDev) {
 }
 
 function draw_normal_distribution(userValue) {
+
     const ctx = document.getElementById('chart-distribution');
 
-    //Generate X and Y values
-    const xs = [];
-    const ys = [];
+    const min = 0;
+    const max = MEAN + 3 * STD_DEV;
 
-    for(let x = 0; x <= 45; x += 1) {   // 0–60 kg/day covers all realistic values
-        xs.push(x);
-        ys.push(normalPDF(x, MEAN, STD_DEV));
+    const step = STD_DEV / 20;
+
+    const curveData = [];
+
+    for (let x = min; x <= max; x += step) {
+        curveData.push({
+            x: x / KG_TO_TONNES,   // convert to tonnes for display
+            y: normalPDF(x, MEAN, STD_DEV)
+        });
     }
 
-    //Destroy previous chart if it exists
-    if(window.distributionChart) {
+    if (window.distributionChart) {
         window.distributionChart.destroy();
     }
 
     window.distributionChart = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: xs,
             datasets: [
                 {
                     label: 'Population',
-                    data: ys,
+                    data: curveData,
                     borderColor: '#000000',
                     borderWidth: 4,
                     tension: 0.4,
@@ -477,9 +536,12 @@ function draw_normal_distribution(userValue) {
                 },
                 {
                     label: 'You',
-                    data: xs.map(x => x === Math.round(userValue) ? normalPDF(x, MEAN, STD_DEV) : null),
+                    data: [{
+                        x: userValue / KG_TO_TONNES,
+                        y: normalPDF(userValue, MEAN, STD_DEV)
+                    }],
+                    backgroundColor: '#E07474',
                     borderColor: '#E07474',
-                    pointBackgroundColor: '#E07474',
                     pointRadius: 6,
                     type: 'scatter'
                 }
@@ -489,31 +551,41 @@ function draw_normal_distribution(userValue) {
             responsive: true,
             scales: {
                 x: {
-                    title: { display: true, text: '' },
-                    grid: { display: false },
-                    border: { display: false }
-                },
-                y: {
+                    type: 'linear',
+                    ticks: {
+                        stepSize: 0.5,
+                        callback: function(value) {
+                            return value.toFixed(1);
+                        }
+                    },
+                    title: {
+                        display: true,
+                    },
                     grid: { display: false },
                     border: { display: false },
-                    display: false
+                },
+                y: {
+                    display: false,
+                    grid: { display: false },
+                    border: { display: false }
                 }
             },
             plugins: {
-                legend: {
-                    display: false
-                }
+                legend: { display: false }
             }
         }
     });
 }
+
+// ===============================
+// NORMAL CDF
+// ===============================
 
 function normalCDF(x, mean, stdDev) {
     return 0.5 * (1 + erf((x - mean) / (stdDev * Math.sqrt(2))));
 }
 
 function erf(x) {
-    // Numerical approximation of the error function
     const sign = x >= 0 ? 1 : -1;
     x = Math.abs(x);
 
@@ -525,10 +597,12 @@ function erf(x) {
     const p = 0.3275911;
 
     const t = 1 / (1 + p * x);
-    const y = 1 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-x * x);
+    const y = 1 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1)
+        * t * Math.exp(-x * x);
 
     return sign * y;
 }
+
 
 function draw_category_pie_chart(total_per_category) {
     const ctx = document.getElementById('pie-category');
@@ -537,8 +611,8 @@ function draw_category_pie_chart(total_per_category) {
         window.categoryChart.destroy();
     }
 
-    const categories = Object.keys(total_per_category);
-    const allZero = categories.every(cat => total_per_category[cat].emission === 0);
+    const categories = Object.keys(total_per_category).map(key => key.charAt(0).toUpperCase() + key.slice(1));
+    const allZero = categories.every(cat => total_per_category[cat.toLowerCase()].emission === 0);
 
     // Fallback: empty chart → black full circle
     if(categories.length === 0 || allZero) {
@@ -565,8 +639,8 @@ function draw_category_pie_chart(total_per_category) {
 
     // Normal dynamic chart
     const labels = categories;
-    const data = categories.map(cat => total_per_category[cat].emission);
-    const colors = categories.map(cat => total_per_category[cat].color);
+    const data = categories.map(cat => (total_per_category[cat.toLowerCase()].emission / KG_TO_TONNES).toFixed(2));
+    const colors = categories.map(cat => total_per_category[cat.toLowerCase()].color);
 
     window.categoryChart = new Chart(ctx, {
         type: 'pie',
