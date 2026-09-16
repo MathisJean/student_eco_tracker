@@ -15,7 +15,7 @@ Most students don't know what to actually do about their individual environmenta
 
 ## What it does
 
-ÉcoMetric lets a student build their full course schedule and get an estimate of their annual emissions from it, using established environmental data. The full proposal (below) extends this with peer comparison and personalized AI-generated suggestions for reducing impact — the working prototype covers the schedule-building and estimation core.
+ÉcoMetric lets a student build their full course schedule and get an estimate of their annual emissions from it, using established environmental data. The full proposal (above) extends this with peer comparison and personalized AI-generated suggestions for reducing impact — the working prototype covers the schedule-building and estimation core.
 
 ## Why this design
 
